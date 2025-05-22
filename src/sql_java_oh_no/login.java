@@ -230,7 +230,7 @@ public class login extends DBConnect {
     private void login_finish_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_finish_btn1ActionPerformed
     String email = email_txt.getText().trim();
 String password = password_txt.getText();
-invalid.setText(""); // Clear previous errors
+invalid.setText("");
 
 if (email.isEmpty() || password.isEmpty()) {
     invalid.setText("Email or Password is Invalid!");
@@ -245,11 +245,11 @@ try {
     ResultSet rs = pstmt.executeQuery();
 
     if (rs.next()) {
-        int userId = rs.getInt("user_id"); // ✅ This gets the user ID from the database
+        int userId = rs.getInt("user_id");
 
-        // Now pass that userId to the next screen:
-        to_do_list mainmenu = new to_do_list(userId); // ✅ Give user ID to to_do_list form
-        this.dispose(); // close login screen
+        
+        to_do_list mainmenu = new to_do_list(userId); 
+        this.dispose();
         mainmenu.setVisible(true);
     } else {
         invalid.setText("Email or Password is Invalid!");

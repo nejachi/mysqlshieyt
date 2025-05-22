@@ -299,7 +299,7 @@ private void loadRememberedEmail() {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
 String email = email1.getText().trim();
-invalid.setText(""); // Clear previous errors
+invalid.setText(""); 
 
 if (email.isEmpty()) {
     invalid.setText("Email is Invalid!");
@@ -313,11 +313,9 @@ try {
     ResultSet rs = pstmt.executeQuery();
 
     if (rs.next()) {
-        currentUserid = rs.getInt("user_id"); // ✅ Set current user ID
+        currentUserid = rs.getInt("user_id");
         loadUserTasks(); 
         rememberEmail(email);
-
-        // 🔔 Check for tasks due within 2 days
         String taskQuery = "SELECT title, due_date FROM tasks WHERE user_id = ?";
         PreparedStatement taskStmt = con.prepareStatement(taskQuery);
         taskStmt.setInt(1, currentUserid);
