@@ -4,6 +4,11 @@
  */
 package sql_java_oh_no;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,19 +23,19 @@ import javax.swing.table.TableRowSorter;
  * @author nejac
  */
 public class task_today extends DBConnect {
-    private int currentUserid;
 DefaultTableModel minecraft = new DefaultTableModel() {
     @Override
     public boolean isCellEditable(int row, int column) {
         return false; 
     }
 };
+int currentUserid;
     int x=0;
-    public task_today(int userId) {
+    public task_today() {
         initComponents();
         DoConnect();
-        this.currentUserid = userId;
         loadUserTasks(); 
+        loadRememberedEmail();
         
     }
     
@@ -68,6 +73,29 @@ DefaultTableModel minecraft = new DefaultTableModel() {
         JOptionPane.showMessageDialog(this, "Error loading tasks: " + e.getMessage());
     }
 }
+    private void rememberEmail(String email) {
+    try {
+        FileWriter writer = new FileWriter("config.txt");
+        writer.write(email);
+        writer.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+private void loadRememberedEmail() {
+    try {
+        File file = new File("config.txt");
+        if (file.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String savedEmail = reader.readLine();
+            email1.setText(savedEmail);
+            reader.close();
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
 
 
     /**
@@ -93,8 +121,9 @@ DefaultTableModel minecraft = new DefaultTableModel() {
         invalid = new javax.swing.JLabel();
         searchbar = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        email1 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
+        jToggleButton1 = new javax.swing.JToggleButton();
 
         description.setColumns(20);
         description.setRows(5);
@@ -133,9 +162,16 @@ DefaultTableModel minecraft = new DefaultTableModel() {
 
         jLabel6.setText("Find");
 
-        jTextField1.setText("jTextField1");
+        email1.setText("jTextField1");
 
         jLabel7.setText("Email:");
+
+        jToggleButton1.setText("jToggleButton1");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -161,8 +197,10 @@ DefaultTableModel minecraft = new DefaultTableModel() {
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(searchbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))))
+                            .addComponent(email1)
+                            .addComponent(searchbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jToggleButton1)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -178,8 +216,9 @@ DefaultTableModel minecraft = new DefaultTableModel() {
                 .addComponent(invalid)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                    .addComponent(email1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(jToggleButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,7 +240,7 @@ DefaultTableModel minecraft = new DefaultTableModel() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -236,6 +275,39 @@ DefaultTableModel minecraft = new DefaultTableModel() {
         mainmenu.setVisible(true);
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+String email = email1.getText().trim();
+    invalid.setText(""); // Clear previous errors
+
+    if (email.isEmpty()) {
+        invalid.setText("Email is Invalid!");
+        return;
+    }
+
+    try {
+        String loginQuery = "SELECT * FROM users WHERE EMAIL = ?";
+        PreparedStatement pstmt = con.prepareStatement(loginQuery);
+        pstmt.setString(1, email);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            currentUserid = rs.getInt("user_id"); // ✅ Correctly set the user ID
+            loadUserTasks(); 
+            rememberEmail(email);
+        } else {
+            invalid.setText("Email is not found!");
+        }
+
+        rs.close();
+        pstmt.close();
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+        e.printStackTrace();
+    }
+
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -267,7 +339,7 @@ DefaultTableModel minecraft = new DefaultTableModel() {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new task_today(1).setVisible(true);
+                new task_today().setVisible(true);
             }
         });
     }
@@ -275,6 +347,7 @@ DefaultTableModel minecraft = new DefaultTableModel() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField date;
     private javax.swing.JTextArea description;
+    private javax.swing.JTextField email1;
     private javax.swing.JLabel invalid;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -284,7 +357,7 @@ DefaultTableModel minecraft = new DefaultTableModel() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JTextField searchbar;
     private javax.swing.JTextField status;
