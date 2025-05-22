@@ -38,6 +38,7 @@ public class login extends DBConnect {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        login_finish_btn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,13 +97,13 @@ public class login extends DBConnect {
         login_finish_btn.setBackground(new java.awt.Color(0, 0, 0));
         login_finish_btn.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
         login_finish_btn.setForeground(new java.awt.Color(255, 255, 255));
-        login_finish_btn.setText("Log In");
+        login_finish_btn.setText("Return");
         login_finish_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 login_finish_btnActionPerformed(evt);
             }
         });
-        jPanel2.add(login_finish_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 380, 152, 50));
+        jPanel2.add(login_finish_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 430, 152, 50));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("forgot password?");
@@ -125,7 +126,7 @@ public class login extends DBConnect {
                 jLabel2MouseClicked(evt);
             }
         });
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 430, -1, -1));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 480, -1, -1));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/password.png"))); // NOI18N
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, -1, -1));
@@ -135,7 +136,18 @@ public class login extends DBConnect {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("or");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 430, -1, 20));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 480, -1, 20));
+
+        login_finish_btn1.setBackground(new java.awt.Color(0, 0, 0));
+        login_finish_btn1.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
+        login_finish_btn1.setForeground(new java.awt.Color(255, 255, 255));
+        login_finish_btn1.setText("Log In");
+        login_finish_btn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                login_finish_btn1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(login_finish_btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 380, 152, 50));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -170,40 +182,9 @@ public class login extends DBConnect {
     }// </editor-fold>//GEN-END:initComponents
 
     private void login_finish_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_finish_btnActionPerformed
-        String email = email_txt.getText().trim();
-String password = password_txt.getText();
-invalid.setText(""); // Clear previous errors
-
-if (email.isEmpty() || password.isEmpty()) {
-    invalid.setText("Email or Password is Invalid!");
-    return;
-}
-
-try {
-    String loginQuery = "SELECT * FROM users WHERE EMAIL = ? AND PASSWORD = ?";
-    PreparedStatement pstmt = con.prepareStatement(loginQuery);
-    pstmt.setString(1, email);
-    pstmt.setString(2, password);
-    ResultSet rs = pstmt.executeQuery();
-
-    if (rs.next()) {
-        int userId = rs.getInt("user_id"); // ✅ This gets the user ID from the database
-
-        // Now pass that userId to the next screen:
-        to_do_list mainmenu = new to_do_list(userId); // ✅ Give user ID to to_do_list form
-        this.dispose(); // close login screen
-        mainmenu.setVisible(true);
-    } else {
-        invalid.setText("Email or Password is Invalid!");
-    }
-
-    rs.close();
-    pstmt.close();
-
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
-    e.printStackTrace();
-}
+ gui mainmenu = new gui();
+        this.dispose();
+        mainmenu.setVisible(true);        
     }//GEN-LAST:event_login_finish_btnActionPerformed
 
     private void email_txtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_email_txtActionPerformed
@@ -245,6 +226,43 @@ try {
         this.dispose();
         mainmenu.setVisible(true);
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void login_finish_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_finish_btn1ActionPerformed
+    String email = email_txt.getText().trim();
+String password = password_txt.getText();
+invalid.setText(""); // Clear previous errors
+
+if (email.isEmpty() || password.isEmpty()) {
+    invalid.setText("Email or Password is Invalid!");
+    return;
+}
+
+try {
+    String loginQuery = "SELECT * FROM users WHERE EMAIL = ? AND PASSWORD = ?";
+    PreparedStatement pstmt = con.prepareStatement(loginQuery);
+    pstmt.setString(1, email);
+    pstmt.setString(2, password);
+    ResultSet rs = pstmt.executeQuery();
+
+    if (rs.next()) {
+        int userId = rs.getInt("user_id"); // ✅ This gets the user ID from the database
+
+        // Now pass that userId to the next screen:
+        to_do_list mainmenu = new to_do_list(userId); // ✅ Give user ID to to_do_list form
+        this.dispose(); // close login screen
+        mainmenu.setVisible(true);
+    } else {
+        invalid.setText("Email or Password is Invalid!");
+    }
+
+    rs.close();
+    pstmt.close();
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+    e.printStackTrace();
+}
+    }//GEN-LAST:event_login_finish_btn1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -293,6 +311,7 @@ try {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton login_finish_btn;
+    private javax.swing.JButton login_finish_btn1;
     private javax.swing.JPasswordField password_txt;
     // End of variables declaration//GEN-END:variables
 }

@@ -128,6 +128,8 @@ DefaultTableModel minecraft = new DefaultTableModel() {
 
         jLabel3.setText("Task Name");
 
+        jToggleButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton1.setForeground(new java.awt.Color(255, 255, 255));
         jToggleButton1.setText("ADD");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,6 +137,8 @@ DefaultTableModel minecraft = new DefaultTableModel() {
             }
         });
 
+        jToggleButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton2.setForeground(new java.awt.Color(255, 255, 255));
         jToggleButton2.setText("DELETE");
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -147,6 +151,8 @@ DefaultTableModel minecraft = new DefaultTableModel() {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel5.setText("YOUR GIST FOR TODAY...");
 
+        jToggleButton3.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton3.setForeground(new java.awt.Color(255, 255, 255));
         jToggleButton3.setText("Log Out");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,6 +160,8 @@ DefaultTableModel minecraft = new DefaultTableModel() {
             }
         });
 
+        jToggleButton4.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton4.setForeground(new java.awt.Color(255, 255, 255));
         jToggleButton4.setText("EDIT");
         jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

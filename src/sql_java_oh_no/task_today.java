@@ -9,14 +9,16 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import javax.swing.JOptionPane;
+import java.lang.StringBuilder;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -124,6 +126,7 @@ private void loadRememberedEmail() {
         email1 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton4 = new javax.swing.JToggleButton();
 
         description.setColumns(20);
         description.setRows(5);
@@ -139,7 +142,9 @@ private void loadRememberedEmail() {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel5.setText("YOUR GIST FOR TODAY...");
 
-        jToggleButton3.setText("Log Out");
+        jToggleButton3.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jToggleButton3.setText("Log In");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton3ActionPerformed(evt);
@@ -162,14 +167,23 @@ private void loadRememberedEmail() {
 
         jLabel6.setText("Find");
 
-        email1.setText("jTextField1");
+        jLabel7.setText("Email");
 
-        jLabel7.setText("Email:");
-
-        jToggleButton1.setText("jToggleButton1");
+        jToggleButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jToggleButton1.setText("See Task");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton1ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton4.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jToggleButton4.setText("Return");
+        jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton4ActionPerformed(evt);
             }
         });
 
@@ -186,7 +200,8 @@ private void loadRememberedEmail() {
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
+                                .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(invalid)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -203,6 +218,9 @@ private void loadRememberedEmail() {
                         .addComponent(jToggleButton1)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {email1, searchbar});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -222,9 +240,13 @@ private void loadRememberedEmail() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton3)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jToggleButton3)
+                    .addComponent(jToggleButton4))
                 .addGap(11, 11, 11))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {email1, searchbar});
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -240,7 +262,7 @@ private void loadRememberedEmail() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -270,43 +292,81 @@ private void loadRememberedEmail() {
     }//GEN-LAST:event_searchbarActionPerformed
 
     private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
-        gui mainmenu = new gui();
+        login mainmenu = new login();
         this.dispose();
         mainmenu.setVisible(true);
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
 String email = email1.getText().trim();
-    invalid.setText(""); // Clear previous errors
+invalid.setText(""); // Clear previous errors
 
-    if (email.isEmpty()) {
-        invalid.setText("Email is Invalid!");
-        return;
-    }
+if (email.isEmpty()) {
+    invalid.setText("Email is Invalid!");
+    return;
+}
 
-    try {
-        String loginQuery = "SELECT * FROM users WHERE EMAIL = ?";
-        PreparedStatement pstmt = con.prepareStatement(loginQuery);
-        pstmt.setString(1, email);
-        ResultSet rs = pstmt.executeQuery();
+try {
+    String loginQuery = "SELECT * FROM users WHERE EMAIL = ?";
+    PreparedStatement pstmt = con.prepareStatement(loginQuery);
+    pstmt.setString(1, email);
+    ResultSet rs = pstmt.executeQuery();
 
-        if (rs.next()) {
-            currentUserid = rs.getInt("user_id"); // ✅ Correctly set the user ID
-            loadUserTasks(); 
-            rememberEmail(email);
-        } else {
-            invalid.setText("Email is not found!");
+    if (rs.next()) {
+        currentUserid = rs.getInt("user_id"); // ✅ Set current user ID
+        loadUserTasks(); 
+        rememberEmail(email);
+
+        // 🔔 Check for tasks due within 2 days
+        String taskQuery = "SELECT title, due_date FROM tasks WHERE user_id = ?";
+        PreparedStatement taskStmt = con.prepareStatement(taskQuery);
+        taskStmt.setInt(1, currentUserid);
+        ResultSet taskRs = taskStmt.executeQuery();
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Timestamp twoDaysLater = new Timestamp(System.currentTimeMillis() + 2L * 24 * 60 * 60 * 1000);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy - hh:mm a");
+        StringBuilder alertMessage = new StringBuilder();
+
+        while (taskRs.next()) {
+            Timestamp due = taskRs.getTimestamp("due_date");
+            if (due != null && due.after(now) && due.before(twoDaysLater)) {
+                alertMessage.append("- ")
+                            .append(taskRs.getString("title"))
+                            .append(" due at ")
+                            .append(sdf.format(due))
+                            .append("\n");
+            }
         }
 
-        rs.close();
-        pstmt.close();
+        if (alertMessage.length() > 0) {
+            JOptionPane.showMessageDialog(this,
+                "The following tasks are almost due (within 2 days):\n" + alertMessage.toString(),
+                "Upcoming Deadlines",
+                JOptionPane.WARNING_MESSAGE);
+        }
 
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
-        e.printStackTrace();
+        taskRs.close();
+        taskStmt.close();
+    } else {
+        invalid.setText("Email is not found!");
     }
 
+    rs.close();
+    pstmt.close();
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+    e.printStackTrace();
+}
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton4ActionPerformed
+   gui mainmenu = new gui();
+        this.dispose();
+        mainmenu.setVisible(true);
+    }//GEN-LAST:event_jToggleButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -359,6 +419,7 @@ String email = email1.getText().trim();
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton3;
+    private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JTextField searchbar;
     private javax.swing.JTextField status;
     private javax.swing.JTextField task1;

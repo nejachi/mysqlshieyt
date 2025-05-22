@@ -30,9 +30,10 @@ Date newdate;
 public void DoConnect() {
     try {
         
-        String url = "jdbc:mysql://localhost:3306/testdb";  // 
-        String user = "root";  // 
-        String pass = "Redcross092962@";  
+String url = "jdbc:mysql://interchange.proxy.rlwy.net:11767/testdb";
+String user = "root";
+String pass = "hYABINOpfAgoztSMyPVPiUNXCTDzKjsA";
+
 
 
         con = DriverManager.getConnection(url, user, pass);
